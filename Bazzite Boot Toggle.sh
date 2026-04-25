@@ -1,48 +1,39 @@
 #!/bin/bash
 
 FILE="/etc/bazzite/desktop_autologin"
-count=1
 
-while [ $count -le 2 ]; do
 if [ -f "$FILE" ]; then
     notify-send 'Boot currently set to Desktop Mode'
     echo "Bazzite is set to boot to Desktop Mode."
-    read -p "Do you want to toggle this to auto boot to Game Mode instead? (Y/n): " choice
+    read -p "If you wish to toggle this to auto boot to Game Mode instead, please press enter: " choice
 
-    if [[ "$choice" == "n" || "$choice" == "N" ]]; then
-        echo "No changes made."
-        sleep 2
-        exit
-        ((count++))
-    elif [[ "$choice" == "" || "$choice" == "y" || "$choice" == "Y" ]]; then
-        sudo rm "$FILE"
+if [[ "$choice" == "" || "$choice" == "y" || "$choice" == "Y" ]]; then
+    if sudo rm "$FILE"; then
         echo "Switched to auto boot to Game Mode."
-        kdialog --passivepopup 'Switched to auto boot to Game Mode.' 5
-        sleep 2
-        exit
-        ((count++))
+        kdialog --msgbox 'Switched to auto boot to Game Mode.'
     else
-        echo "Invalid input"
+        echo "Failed to remove $FILE (maybe sudo was canceled?)"
+        kdialog --error 'Failed to switch to Game Mode.'
     fi
+    sleep 2
+    exit
+fi
+
 else
     notify-send 'Boot currently set to Game Mode'
     echo "Bazzite is set to boot to Game Mode."
-    read -p "Do you want to toggle this to auto boot to Desktop Mode instead? (Y/n): " choice
+    read -p "If you wish to toggle this to auto boot to Desktop Mode instead, please press enter: " choice
 
-    if [[ "$choice" == "n" || "$choice" == "N" ]]; then
-        echo "No changes made."
-        sleep 2
-        exit
-        ((count++))
-    elif [[ "$choice" == "" || "$choice" == "y" || "$choice" == "Y" ]]; then
-        sudo touch "$FILE"
+if [[ "$choice" == "" || "$choice" == "y" || "$choice" == "Y" ]]; then
+    if sudo touch "$FILE"; then
         echo "Switched to auto boot to Desktop Mode."
-        kdialog --passivepopup 'Switched to auto boot to Desktop Mode.' 5
-        sleep 2
-        exit
-        ((count++))
+        kdialog --msgbox 'Switched to auto boot to Desktop Mode.'
     else
-        echo "Invalid input"
+        echo "Failed to create $FILE (maybe sudo was canceled?)"
+        kdialog --error 'Failed to switch to Desktop Mode.'
     fi
+    sleep 2
+    exit
+fi
 fi
 done
