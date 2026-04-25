@@ -5,6 +5,7 @@ count=1
 
 while [ $count -le 2 ]; do
 if [ -f "$FILE" ]; then
+    notify-send 'Boot currently set to Desktop Mode'
     echo "Bazzite is set to boot to Desktop Mode."
     read -p "Do you want to toggle this to auto boot to Game Mode instead? (Y/n): " choice
 
@@ -16,6 +17,7 @@ if [ -f "$FILE" ]; then
     elif [[ "$choice" == "" || "$choice" == "y" || "$choice" == "Y" ]]; then
         sudo rm "$FILE"
         echo "Switched to auto boot to Game Mode."
+        kdialog --passivepopup 'Switched to auto boot to Game Mode.' 5
         sleep 2
         exit
         ((count++))
@@ -23,6 +25,7 @@ if [ -f "$FILE" ]; then
         echo "Invalid input"
     fi
 else
+    notify-send 'Boot currently set to Game Mode'
     echo "Bazzite is set to boot to Game Mode."
     read -p "Do you want to toggle this to auto boot to Desktop Mode instead? (Y/n): " choice
 
@@ -34,6 +37,7 @@ else
     elif [[ "$choice" == "" || "$choice" == "y" || "$choice" == "Y" ]]; then
         sudo touch "$FILE"
         echo "Switched to auto boot to Desktop Mode."
+        kdialog --passivepopup 'Switched to auto boot to Desktop Mode.' 5
         sleep 2
         exit
         ((count++))
